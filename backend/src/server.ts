@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 
+// ✅ ADICIONE ESSA LINHA ABAIXO — Importa a conexão com o banco!
+import './database/db';
+
 dotenv.config();
 const app = express();
 const PORTA = process.env.PORT || 3333;

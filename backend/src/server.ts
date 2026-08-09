@@ -7,19 +7,29 @@ dotenv.config();
 const app = express();
 const PORTA = process.env.PORT || 3333;
 
-// Configurar CORS
+// ==========================================
+// ✅ CORS — PRIMEIRO de TUDO, ANTES das rotas!
+// ==========================================
 app.use(cors({
-  origin: "*", // Permite qualquer origem (ajuste depois para o endereço do seu frontend)
+  origin: '*',
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 204
 }));
 
-app.use(cors());
+// Responde OPTIONS para qualquer rota (pré-voo)
+app.options('*', cors());
+
+// ==========================================
+// Demais middlewares
+// ==========================================
 app.use(express.json());
 app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 
+// ==========================================
 // Rotas
+// ==========================================
 import { login } from './controllers/AuthController';
 app.post('/login', login);
 
@@ -27,7 +37,9 @@ app.post('/login', login);
 import { authMiddleware } from './middleware/auth';
 app.use(authMiddleware);
 
-// Usuários, Veículos, Checklists e Chamados — adicione as rotas completas
-app.get('/dashboard', (req, res) => res.json({ mensagem: `Bem-vindo! Nível: ${req.usuario.nivel}` }));
+app.get('/dashboard', (req, res) => res.json({ mensagem: `Bem-vindo! Nível: ${req.user.nivel}` }));
 
+// ==========================================
+// Inicia servidor
+// ==========================================
 app.listen(PORTA, () => console.log(`🚀 API rodando na porta ${PORTA}`));

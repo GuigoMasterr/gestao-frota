@@ -10,22 +10,33 @@ const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORTA = process.env.PORT || 3333;
-// Configurar CORS
+// ==========================================
+// ✅ CORS — PRIMEIRO de TUDO, ANTES das rotas!
+// ==========================================
 app.use((0, cors_1.default)({
-    origin: "*", // Permite qualquer origem (ajuste depois para o endereço do seu frontend)
+    origin: '*',
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 204
 }));
-app.use((0, cors_1.default)());
+// Responde OPTIONS para qualquer rota (pré-voo)
+app.options('*', (0, cors_1.default)());
+// ==========================================
+// Demais middlewares
+// ==========================================
 app.use(express_1.default.json());
 app.use('/uploads', express_1.default.static(path_1.default.resolve(__dirname, '..', 'uploads')));
+// ==========================================
 // Rotas
+// ==========================================
 const AuthController_1 = require("./controllers/AuthController");
 app.post('/login', AuthController_1.login);
 // Rotas protegidas
 const auth_1 = require("./middleware/auth");
 app.use(auth_1.authMiddleware);
-// Usuários, Veículos, Checklists e Chamados — adicione as rotas completas
-app.get('/dashboard', (req, res) => res.json({ mensagem: `Bem-vindo! Nível: ${req.usuario.nivel}` }));
+app.get('/dashboard', (req, res) => res.json({ mensagem: `Bem-vindo! Nível: ${req.user.nivel}` }));
+// ==========================================
+// Inicia servidor
+// ==========================================
 app.listen(PORTA, () => console.log(`🚀 API rodando na porta ${PORTA}`));

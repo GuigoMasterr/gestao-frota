@@ -37,7 +37,7 @@ app.post('/login', login);
 import { authMiddleware } from './middleware/auth';
 app.use(authMiddleware);
 
-app.get('/dashboard', (req, res) => res.json({ mensagem: `Bem-vindo! Nível: ${req.user.nivel}` }));
+app.get('/dashboard', (req: any, res) => res.json({ mensagem: `Bem-vindo! Nível: ${req.user.nivel}` }));
 
 // ==========================================
 // Inicia servidor

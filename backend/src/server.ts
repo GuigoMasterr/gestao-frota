@@ -7,6 +7,14 @@ dotenv.config();
 const app = express();
 const PORTA = process.env.PORT || 3333;
 
+// Configurar CORS
+app.use(cors({
+  origin: "*", // Permite qualquer origem (ajuste depois para o endereço do seu frontend)
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
